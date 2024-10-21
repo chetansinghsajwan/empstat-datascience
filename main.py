@@ -1,10 +1,12 @@
+# %%
+
 from typing import Optional
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 # %%
-# loading datasets
+# Loading Datasets
 
 
 def load_dataset(name: str, print_info: bool = False) -> Optional[pd.DataFrame]:
@@ -141,13 +143,13 @@ df["assessment_internet_allowed"] = df["assessment_internet_allowed"].astype(boo
 print("merged dataset:")
 print(df.info())
 
+# %%
 # Correlation mapping
 
 print("Calculating correlation matrix...")
 numeric_df = df.select_dtypes(include=["number"])
 correlation_matrix = numeric_df.corr()
 
-# Visualization of the correlation matrix
 plt.figure(figsize=(12, 8))
 sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", square=True)
 plt.title("Correlation Matrix")
@@ -211,10 +213,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-
-# Splitting the data into training and test sets
-# The target variable is 'promoted' (1 if the employee was promoted, 0 otherwise)
-
 # splitting dataset into training and test datasets
 x = df.drop(columns=["promoted"])
 y = df["promoted"]
@@ -223,20 +221,16 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, test_size=0.2, random_state=42
 )
 
-# Handling categorical variables using one-hot encoding
+# using one-hot encoding for categorical values
 x_train = pd.get_dummies(x_train, drop_first=True)
 x_test = pd.get_dummies(x_test, drop_first=True)
 
-# Align the columns of the test set with the training set (in case of any missing columns)
+# align the columns of the test set with the training set (in case of any missing columns)
 x_test = x_test.reindex(columns=x_train.columns, fill_value=0)
 
-# Training the Logistic Regression model
-log_reg = LogisticRegression(
-    max_iter=1000
-)  # Setting max_iter to a higher value to ensure convergence
+log_reg = LogisticRegression(max_iter=10000)
 log_reg.fit(x_train, y_train)
 
-# Making predictions
 y_pred = log_reg.predict(x_test)
 
 # %%
@@ -248,20 +242,15 @@ class_report = classification_report(y_test, y_pred)
 
 print(f"model accuracy: {accuracy * 100:.2f}%")
 
-print("confusion Matrix:")
-print(conf_matrix)
-
-print("classification report:")
-print(class_report)
-
-# %%
-# Visualization
-#
-# visualizing the confusion matrix using Seaborn
-
+# displaying confusion matrix
 plt.figure(figsize=(6, 4))
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", cbar=False)
 plt.title("Confusion Matrix")
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.show()
+
+print("classification report:")
+print(class_report)
+
+# %%
