@@ -138,6 +138,7 @@ df["training_updated_at"] = pd.to_datetime(df["training_updated_at"], errors="co
 
 # boolean types
 df["assessment_internet_allowed"] = df["assessment_internet_allowed"].astype(bool)
+df["promoted"] = df["promoted"].astype(bool)
 
 
 print("merged dataset:")
@@ -182,11 +183,6 @@ df["performance_rating"] = (
 df["length_of_service"] = (
     pd.to_datetime("today") - df["user_created_at"]
 ).dt.days  # Length of service in days
-
-# Example: Define the target variable (you should replace 'promotion_status' with the actual column name for promotion)
-df["promoted"] = df["user_role"].apply(
-    lambda x: 1 if x == "admin" else 0
-)  # Dummy target variable for demonstration
 
 # we wont need these columns for generating model
 df = df.drop(
