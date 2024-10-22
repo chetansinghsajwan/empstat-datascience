@@ -206,7 +206,7 @@ print(df.info())
 # Model Generation
 
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 # splitting dataset into training and test datasets
@@ -224,10 +224,11 @@ x_test = pd.get_dummies(x_test, drop_first=True)
 # align the columns of the test set with the training set (in case of any missing columns)
 x_test = x_test.reindex(columns=x_train.columns, fill_value=0)
 
-log_reg = LogisticRegression(max_iter=10000)
-log_reg.fit(x_train, y_train)
+# using RandomForestClassifier instead of LogisticRegression
+rf_clf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_clf.fit(x_train, y_train)
 
-y_pred = log_reg.predict(x_test)
+y_pred = rf_clf.predict(x_test)
 
 # %%
 # Evaluating the model
@@ -240,7 +241,7 @@ print(f"model accuracy: {accuracy * 100:.2f}%")
 
 # displaying confusion matrix
 plt.figure(figsize=(6, 4))
-sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", cbar=False)
+sns.heatmap(conf_matrix, annot=True, cmap="Blues", cbar=False)
 plt.title("Confusion Matrix")
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
